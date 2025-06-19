@@ -9,9 +9,11 @@ namespace ml
     protected:
         std::vector<double> coef;
         double intercept;
+        double lr;
+        int iters;
 
     public:
-        LinearRegression();
+        LinearRegression(double lr = 0.01, int iters = 1000);
         void fit(const Matrix &X, const std::vector<double> &y) override;
         std::vector<double> predict(const Matrix &X) override;
     };

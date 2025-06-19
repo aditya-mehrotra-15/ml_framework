@@ -3,14 +3,16 @@
 
 namespace ml
 {
-  LassoRegression::LassoRegression(double alpha) : RidgeRegression(alpha) {}
+  LassoRegression::LassoRegression(double alpha, double lr, int iters)
+      : RidgeRegression(alpha, lr, iters) {}
+
   void LassoRegression::fit(const Matrix &X, const std::vector<double> &y)
   {
     size_t n = X.size(), m = X[0].size();
     coef.assign(m, 0.0);
     intercept = 0.0;
-    double lr = 0.01, alpha = 1.0;
-    for (int it = 0; it < 1000; ++it)
+    double alpha = this->alpha;
+    for (int it = 0; it < this->iters; ++it)
     {
       std::vector<double> preds = predict(X);
       for (size_t j = 0; j < m; ++j)
@@ -19,12 +21,12 @@ namespace ml
         for (size_t i = 0; i < n; ++i)
           grad += (preds[i] - y[i]) * X[i][j];
         grad = grad / n + alpha * (coef[j] > 0 ? 1 : -1);
-        coef[j] -= lr * grad;
+        coef[j] -= this->lr * grad;
       }
       double grad0 = 0;
       for (size_t i = 0; i < n; ++i)
         grad0 += preds[i] - y[i];
-      intercept -= lr * grad0 / n;
+      intercept -= this->lr * grad0 / n;
     }
   }
 }

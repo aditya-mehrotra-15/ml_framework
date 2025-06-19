@@ -3,15 +3,14 @@
 
 namespace ml
 {
-    LinearRegression::LinearRegression() : intercept(0) {}
+    LinearRegression::LinearRegression(double lr_, int iters_) : intercept(0), lr(lr_), iters(iters_) {}
 
     void LinearRegression::fit(const Matrix &X, const std::vector<double> &y)
     {
         size_t n = X.size(), m = X[0].size();
         coef.assign(m, 0.0);
         intercept = 0.0;
-        double lr = 0.01;
-        for (int it = 0; it < 1000; ++it)
+        for (int it = 0; it < iters; ++it)
         {
             std::vector<double> preds = predict(X);
             for (size_t j = 0; j < m; ++j)

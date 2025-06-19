@@ -2,14 +2,15 @@
 
 namespace ml
 {
-  RidgeRegression::RidgeRegression(double alpha_) : alpha(alpha_) {}
+  RidgeRegression::RidgeRegression(double alpha_, double lr_, int iters_)
+      : LinearRegression(lr_, iters_), alpha(alpha_) {}
+
   void RidgeRegression::fit(const Matrix &X, const std::vector<double> &y)
   {
     size_t n = X.size(), m = X[0].size();
     coef.assign(m, 0.0);
     intercept = 0.0;
-    double lr = 0.01;
-    for (int it = 0; it < 1000; ++it)
+    for (int it = 0; it < iters; ++it)
     {
       std::vector<double> preds = predict(X);
       for (size_t j = 0; j < m; ++j)

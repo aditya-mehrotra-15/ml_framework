@@ -3,14 +3,15 @@
 
 namespace ml
 {
-  PolynomialRegression::PolynomialRegression(int deg) : degree(deg) {}
+  PolynomialRegression::PolynomialRegression(int deg, double lr, int iters)
+      : LinearRegression(lr, iters), degree(deg) {}
 
   Matrix PolynomialRegression::transform(const Matrix &X)
   {
     Matrix Xp;
     for (const auto &row : X)
     {
-      std::vector<double> r = {1.0};
+      std::vector<double> r;
       for (int d = 1; d <= degree; ++d)
         for (double v : row)
           r.push_back(std::pow(v, d));
