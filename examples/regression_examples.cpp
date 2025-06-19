@@ -12,7 +12,7 @@
 int main()
 {
     // regression dataset (numeric features, continuous target)
-    // Format: feature1,feature2,...,target (last column is target)
+    // last col is target
     auto data = ml::Dataset::load_csv("regression_data1.csv", false);
     if (data.X.empty())
     {
@@ -33,28 +33,28 @@ int main()
     ml::transform_standardize(Xtest, mean, stdev);       // Scale test with train params
     
 
-    // 1. Linear Regression - Suitable for linear relationships
+    // 1. Linear Regression 
     ml::LinearRegression lr;
     lr.fit(Xtrain, ytrain);
     auto lr_preds = lr.predict(Xtest);
     std::cout << "Linear Regression MSE: "
               << ml::mean_squared_error(ytest, lr_preds) << "\n";
 
-    // 2. Polynomial Regression - Non-linear relationships (degree=2)
+    // 2. Polynomial Regression (degree=2)
     ml::PolynomialRegression poly(2);
     poly.fit(Xtrain, ytrain);
     auto poly_preds = poly.predict(Xtest);
     std::cout << "Polynomial Regression MSE: "
               << ml::mean_squared_error(ytest, poly_preds) << "\n";
 
-    // 3. Ridge Regression - Regularized linear regression
+    // 3. Ridge Regression L2
     ml::RidgeRegression ridge(1.0);
     ridge.fit(Xtrain, ytrain);
     auto ridge_preds = ridge.predict(Xtest);
     std::cout << "Ridge Regression MSE: "
               << ml::mean_squared_error(ytest, ridge_preds) << "\n";
 
-    // 4. Lasso Regression - Feature selection with L1 regularization
+    // 4. Lasso Regression L1
     ml::LassoRegression lasso(0.5);
     lasso.fit(Xtrain, ytrain);
     auto lasso_preds = lasso.predict(Xtest);

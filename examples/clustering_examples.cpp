@@ -44,7 +44,7 @@ int main()
     ml::DBSCAN dbscan(eps, minpts);
     auto dbscan_labels = dbscan.fit_predict(data.X);
 
-    std::cout << "\nDBSCAN clustering results:\n";
+    std::cout << "DBSCAN clustering results:\n";
     for (size_t i = 0; i < dbscan_labels.size(); ++i)
     {
         if (dbscan_labels[i] == -1)

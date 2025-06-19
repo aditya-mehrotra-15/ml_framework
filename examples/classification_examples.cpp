@@ -12,7 +12,7 @@
 
 int main() {
     // classification dataset (numeric features, categorical target)
-    // Format: feature1,feature2,...,target (last column is target)
+    // last col is target
     auto data = ml::Dataset::load_csv("toy_binary_dataset.csv", false);
     if (data.X.empty()) {
         std::cerr << "Failed to load data\n";
