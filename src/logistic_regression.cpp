@@ -1,10 +1,13 @@
 #include "ml_framework/logistic_regression.h"
+#include "ml_framework/metrics.h"
 #include <cmath>
 
 namespace ml
 {
+
   double LogisticRegression::sigmoid(double z) { return 1.0 / (1.0 + std::exp(-z)); }
   LogisticRegression::LogisticRegression(double lr_, int iters_) : intercept(0), lr(lr_), iters(iters_) {}
+
   void LogisticRegression::fit(const Matrix &X, const std::vector<double> &y)
   {
     size_t n = X.size(), m = X[0].size();
@@ -32,8 +35,15 @@ namespace ml
       for (size_t j = 0; j < m; ++j)
         coef[j] -= lr * gradw[j] / n;
       intercept -= lr * grad0 / n;
+
+      if (progress_callback_ && (epoch % progress_interval_ == 0))
+      {
+        double acc = accuracy(y, preds);
+        progress_callback_(epoch, "Accuracy", acc);
+      }
     }
   }
+
   std::vector<double> LogisticRegression::predict(const Matrix &X)
   {
     size_t n = X.size(), m = X[0].size();
@@ -47,4 +57,5 @@ namespace ml
     }
     return out;
   }
+
 }

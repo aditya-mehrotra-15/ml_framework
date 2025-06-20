@@ -1,11 +1,14 @@
 #include "ml_framework/kmeans.h"
+#include "ml_framework/metrics.h"
 #include <random>
 #include <limits>
 #include <cmath>
 
 namespace ml
 {
+
   KMeans::KMeans(int k_, int max_iters_) : k(k_), max_iters(max_iters_) {}
+
   void KMeans::fit(const Matrix &X)
   {
     int n = X.size(), m = X[0].size();
@@ -15,6 +18,7 @@ namespace ml
     for (int i = 0; i < k; ++i)
       centroids[i] = X[dist(rng)];
     std::vector<int> labels(n);
+
     for (int it = 0; it < max_iters; ++it)
     {
       // assign
@@ -48,8 +52,15 @@ namespace ml
         if (counts[c])
           for (int j = 0; j < m; ++j)
             centroids[c][j] = newc[c][j] / counts[c];
+
+      if (progress_callback_ && (it % progress_interval_ == 0))
+      {
+        double inrt = inertia(X, centroids, labels);
+        progress_callback_(it, "Inertia", inrt);
+      }
     }
   }
+
   std::vector<int> KMeans::predict(const Matrix &X) const
   {
     int n = X.size(), m = X[0].size();
@@ -73,4 +84,5 @@ namespace ml
     }
     return labels;
   }
+
 }

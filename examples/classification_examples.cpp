@@ -30,41 +30,52 @@ int main() {
     ml::fit_transform_standardize(Xtrain, mean, stdev);  // Fit and scale train
     ml::transform_standardize(Xtest, mean, stdev);       // Scale test with train params
     
+    //see regression examples
+    auto progress_callback = [](int epoch, const std::string &metric, double value)
+    {
+        std::cout << "Epoch " << epoch << ": " << metric << " = " << value << "\n";
+    };
 
-    // 1. Logistic Regression - Binary classification
-    ml::LogisticRegression logreg;
+    // 1. Logistic Regression 
+    ml::LogisticRegression logreg(
+        0.05, //lr
+        2000  //iters
+    );
+    logreg.set_progress_callback(progress_callback, 100);
     logreg.fit(Xtrain, ytrain);
     auto logreg_probs = logreg.predict(Xtest);
-    std::cout << "Logistic Regression Accuracy: " 
-              << ml::accuracy(ytest, logreg_probs) << "\n";
+    std::cout << "Logistic Regression Accuracy: " << ml::accuracy(ytest, logreg_probs) << "\n";
 
-    // 2. Decision Tree - Handles non-linear boundaries
-    ml::DecisionTree tree(5, 2);
+
+    // 2. Decision Tree 
+    ml::DecisionTree tree(
+        3, // max depth
+        3  //min samples to split
+    );
     tree.fit(Xtrain, ytrain);
     auto tree_preds = tree.predict(Xtest);
-    std::cout << "Decision Tree Accuracy: " 
-              << ml::accuracy(ytest, tree_preds) << "\n";
+    std::cout << "Decision Tree Accuracy: " << ml::accuracy(ytest, tree_preds) << "\n";
 
-    // 3. KNN - Distance-based classification (k=5)
-    ml::KNN knn(5);
+
+    // 3. KNN 
+    ml::KNN knn(3); //k=5
     knn.fit(Xtrain, ytrain);
     auto knn_preds = knn.predict(Xtest);
-    std::cout << "KNN Accuracy: " 
-              << ml::accuracy(ytest, knn_preds) << "\n";
+    std::cout << "KNN Accuracy: " << ml::accuracy(ytest, knn_preds) << "\n";
 
-    // 4. SVM - Binary classification with margin maximization
+
+    // 4. SVM 
     ml::SVM svm(0.01, 1.0, 1000);
     svm.fit(Xtrain, ytrain);
     auto svm_preds = svm.predict(Xtest);
-    std::cout << "SVM Accuracy: " 
-              << ml::accuracy(ytest, svm_preds) << "\n";
+    std::cout << "SVM Accuracy: " << ml::accuracy(ytest, svm_preds) << "\n";
 
-    // 5. Naive Bayes - Probabilistic classifier
+
+    // 5. Naive Bayes 
     ml::NaiveBayes nb;
     nb.fit(Xtrain, ytrain);
     auto nb_preds = nb.predict(Xtest);
-    std::cout << "Naive Bayes Accuracy: " 
-              << ml::accuracy(ytest, nb_preds) << "\n";
+    std::cout << "Naive Bayes Accuracy: " << ml::accuracy(ytest, nb_preds) << "\n";
 
     return 0;
 }

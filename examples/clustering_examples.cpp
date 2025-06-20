@@ -15,11 +15,11 @@ int main()
         return 1;
     }
 
-    // --- Always scale features ---
+    // scale
     std::vector<double> mean, stdev;
     ml::fit_transform_standardize(data.X, mean, stdev);
 
-    // 1. KMeans Clustering
+    // 1. KMeans
     int num_clusters = 3;
     ml::KMeans kmeans(num_clusters, 100);
     kmeans.fit(data.X);
@@ -38,7 +38,7 @@ int main()
         std::cout << "\n";
     }
 
-    // 2. DBSCAN Clustering
+    // 2. DBSCAN
     double eps = 0.5;
     int minpts = 5;
     ml::DBSCAN dbscan(eps, minpts);

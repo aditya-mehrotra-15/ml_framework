@@ -1,8 +1,11 @@
 #include "ml_framework/svm.h"
+#include "ml_framework/metrics.h"
 
 namespace ml
 {
+
   SVM::SVM(double lr_, double C_, int iters_) : lr(lr_), C(C_), iters(iters_), intercept(0) {}
+
   void SVM::fit(const Matrix &X, const std::vector<double> &y)
   {
     size_t n = X.size(), m = X[0].size();
@@ -11,6 +14,7 @@ namespace ml
     std::vector<double> Yn(n);
     for (size_t i = 0; i < n; ++i)
       Yn[i] = y[i] > 0.5 ? 1.0 : -1.0;
+
     for (int it = 0; it < iters; ++it)
     {
       for (size_t i = 0; i < n; ++i)
@@ -30,8 +34,15 @@ namespace ml
             coef[j] += lr * (-2.0 / iters * coef[j]);
         }
       }
+      if (progress_callback_ && (it % progress_interval_ == 0))
+      {
+        auto preds = predict(X);
+        double hloss = hinge_loss(y, preds);
+        progress_callback_(it, "HingeLoss", hloss);
+      }
     }
   }
+
   std::vector<double> SVM::predict(const Matrix &X)
   {
     size_t n = X.size(), m = X[0].size();
@@ -45,4 +56,5 @@ namespace ml
     }
     return out;
   }
+
 }

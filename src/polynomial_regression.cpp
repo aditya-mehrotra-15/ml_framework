@@ -1,4 +1,5 @@
 #include "ml_framework/polynomial_regression.h"
+#include "ml_framework/metrics.h"
 #include <cmath>
 
 namespace ml

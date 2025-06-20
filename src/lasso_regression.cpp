@@ -1,4 +1,5 @@
 #include "ml_framework/lasso_regression.h"
+#include "ml_framework/metrics.h"
 #include <cmath>
 
 namespace ml
@@ -12,7 +13,7 @@ namespace ml
     coef.assign(m, 0.0);
     intercept = 0.0;
     double alpha = this->alpha;
-    for (int it = 0; it < this->iters; ++it)
+    for (int epoch = 0; epoch < this->iters; ++epoch)
     {
       std::vector<double> preds = predict(X);
       for (size_t j = 0; j < m; ++j)
@@ -27,6 +28,12 @@ namespace ml
       for (size_t i = 0; i < n; ++i)
         grad0 += preds[i] - y[i];
       intercept -= this->lr * grad0 / n;
+
+      if (progress_callback_ && (epoch % progress_interval_ == 0))
+      {
+        double mse = mean_squared_error(y, preds);
+        progress_callback_(epoch, "MSE", mse);
+      }
     }
   }
 }
