@@ -19,7 +19,7 @@ int main() {
         return 1;
     }
 
-    // Train/test split (80/20)
+    // Split into 80% train, 20% test
     size_t ntrain = static_cast<size_t>(data.X.size() * 0.8);
     ml::Matrix Xtrain(data.X.begin(), data.X.begin() + ntrain);
     ml::Matrix Xtest(data.X.begin() + ntrain, data.X.end());
@@ -27,8 +27,8 @@ int main() {
     std::vector<double> ytest(data.y.begin() + ntrain, data.y.end());
 
     std::vector<double> mean, stdev;
-    ml::fit_transform_standardize(Xtrain, mean, stdev);  // Fit and scale train
-    ml::transform_standardize(Xtest, mean, stdev);       // Scale test with train params
+    ml::fit_transform_standardize(Xtrain, mean, stdev);
+    ml::transform_standardize(Xtest, mean, stdev);
     
     //see regression examples
     auto progress_callback = [](int epoch, const std::string &metric, double value)
@@ -36,7 +36,7 @@ int main() {
         std::cout << "Epoch " << epoch << ": " << metric << " = " << value << "\n";
     };
 
-    // 1. Logistic Regression 
+    // Logistic Regression
     ml::LogisticRegression logreg(
         0.05, //lr
         2000  //iters
@@ -46,8 +46,7 @@ int main() {
     auto logreg_probs = logreg.predict(Xtest);
     std::cout << "Logistic Regression Accuracy: " << ml::accuracy(ytest, logreg_probs) << "\n";
 
-
-    // 2. Decision Tree 
+    // Decision Tree
     ml::DecisionTree tree(
         3, // max depth
         3  //min samples to split
@@ -56,22 +55,20 @@ int main() {
     auto tree_preds = tree.predict(Xtest);
     std::cout << "Decision Tree Accuracy: " << ml::accuracy(ytest, tree_preds) << "\n";
 
-
-    // 3. KNN 
-    ml::KNN knn(3); //k=5
+    // KNN
+    ml::KNN knn(5); // k = 5
     knn.fit(Xtrain, ytrain);
     auto knn_preds = knn.predict(Xtest);
     std::cout << "KNN Accuracy: " << ml::accuracy(ytest, knn_preds) << "\n";
 
-
-    // 4. SVM 
+    // SVM
     ml::SVM svm(0.01, 1.0, 1000);
+    svm.set_progress_callback(progress_callback, 100);
     svm.fit(Xtrain, ytrain);
     auto svm_preds = svm.predict(Xtest);
     std::cout << "SVM Accuracy: " << ml::accuracy(ytest, svm_preds) << "\n";
 
-
-    // 5. Naive Bayes 
+    // Naive Bayes
     ml::NaiveBayes nb;
     nb.fit(Xtrain, ytrain);
     auto nb_preds = nb.predict(Xtest);

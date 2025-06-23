@@ -37,7 +37,7 @@ int main()
         std::cout << "Epoch " << epoch << ": " << metric << " = " << value << "\n";
     };
 
-    // 1. Linear Regression
+    // Linear Regression
     ml::LinearRegression lr(
         0.005, // lr (default: 0.01)
         5000   // iters (default: 1000)
@@ -47,27 +47,27 @@ int main()
     auto lr_preds = lr.predict(Xtest);
     std::cout << "Linear Regression MSE: " << ml::mean_squared_error(ytest, lr_preds) << "\n";
 
-    // 2. Polynomial Regressio
+    // Polynomial Regression
     ml::PolynomialRegression poly(
-        2, // degree (default: 2)
+        2, // degree
         0.005,
         3000);
     poly.fit(Xtrain, ytrain);
     auto poly_preds = poly.predict(Xtest);
     std::cout << "Polynomial Regression MSE: " << ml::mean_squared_error(ytest, poly_preds) << "\n";
 
-    // 3. Ridge Regression
+    // Ridge Regression
     ml::RidgeRegression ridge(
-        0.1, // alpha (L2 regularization strength)
+        0.1, // L2 regularization strength
         0.005,
         3000);
     ridge.fit(Xtrain, ytrain);
     auto ridge_preds = ridge.predict(Xtest);
     std::cout << "Ridge Regression MSE: " << ml::mean_squared_error(ytest, ridge_preds) << "\n";
 
-    // 4. Lasso Regression
+    // Lasso Regression
     ml::LassoRegression lasso(
-        0.5, // alpha (L1 regularization strength)
+        0.5, // L1 regularization strength
         0.005,
         3000);
     lasso.fit(Xtrain, ytrain);

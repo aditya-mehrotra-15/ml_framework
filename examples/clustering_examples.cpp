@@ -19,7 +19,7 @@ int main()
     std::vector<double> mean, stdev;
     ml::fit_transform_standardize(data.X, mean, stdev);
 
-    // 1. KMeans
+    // KMeans clustering
     int num_clusters = 3;
     ml::KMeans kmeans(num_clusters, 100);
     kmeans.fit(data.X);
@@ -38,7 +38,7 @@ int main()
         std::cout << "\n";
     }
 
-    // 2. DBSCAN
+    // DBSCAN clustering
     double eps = 0.5;
     int minpts = 5;
     ml::DBSCAN dbscan(eps, minpts);
